@@ -9,14 +9,29 @@ eureka:
 
 spring:
   zipkin:
-    base-url: http://zipkin-svc:9411
+    # Para integrar con Jaeger
+    base-url: http://jaeger:5775/api/traces  # Cambia esto si tu Jaeger está en otra dirección o puerto
   sleuth:
     sampler:
       probability: 1.0
 
+  # Prometheus - Exportación de métricas
+  metrics:
+    export:
+      prometheus:
+        enabled: true  # Habilitar la exportación de métricas a Prometheus
+        step: 30s  # Intervalo para las métricas
+
 logging:
   pattern:
-    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"      
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus  # Exponer los endpoints de Prometheus
+
 
 #okta:
 #  oauth2:
